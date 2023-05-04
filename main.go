@@ -10,7 +10,10 @@ import (
 )
 
 func IpLook(w http.ResponseWriter, r *http.Request) {
-	ip, _, _ := net.SplitHostPort(r.RemoteAddr)
+	ip := r.Header.Get("X-Forwarded-For")
+	if ip == "" {
+		ip, _, _ = net.SplitHostPort(r.RemoteAddr)
+	}
 	log.Printf(" INFO - from IP: %s", ip)
 	response := map[string]string{"ip": ip}
 	jsonResp, _ := json.Marshal(response)
